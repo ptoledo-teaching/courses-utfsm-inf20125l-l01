@@ -93,8 +93,6 @@ void analizar_lote(int lote, int n_sondas)
   printf("Lote %7d | sondas: %2d | detecciones: %2d | "
          "max: %3d | min: %3d | avg: %4d\n",
          lote, n_sondas, detecciones, max, min, avg);
-
-  free(alertas);
 }
 
 int main(void)
