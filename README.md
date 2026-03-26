@@ -247,7 +247,7 @@ A lo largo de la sesión se han introducido varias herramientas fundamentales pa
 
 | Herramienta | Para qué sirve              | Sesión en detalle |
 |-------------|-----------------------------|-------------------|
-| `vim`       | Editar código en terminal   |                   |
+| `vim`       | Editar código en terminal   | L03               |
 | `gcc`       | Compilar C                  | L03               |
 | `make`      | Automatizar compilación     | L13               |
 | `gdb`       | Depurar crashes             | L06               |

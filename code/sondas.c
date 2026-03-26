@@ -5,7 +5,7 @@
  * aleatorio de sondas detecta actividad rebelde y transmite una alerta
  * (intensidad 0-100). Las sondas que no detectan nada no reportan.
  *
- * ADVERTENCIA: Este archivo contiene bugs intencionales para fines
+ * ADVERTENCIA: este archivo contiene bugs intencionales para fines
  * demostrativos.
  *
  * Compilar: make
