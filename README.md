@@ -1,10 +1,18 @@
 # L01: Presentación del Laboratorio
 
+## Introducción
+
 Esta sesión es introductoria y de carácter demostrativo. En lugar de una actividad práctica, esta clase recorre de forma anticipada las principales herramientas que se usarán durante el semestre, trabajando sobre un programa en C que evoluciona a medida que se introducen cada una de ellas.
 
 El objetivo no es dominar estas herramientas hoy, cada una tendrá su sesión dedicada, sino tener una primera visión del conjunto y entender para qué sirve cada pieza.
 
-## Contexto del problema
+### Pre-requisitos
+
+- Máquina virtual Lubuntu con VirtualBox
+- Herramientas instaladas: `gcc`, `make`, `gdb`, `valgrind`, `htop`
+- Repositorio clonado localmente
+
+### Contexto
 
 El Imperio Galáctico ha desplegado una red de sondas en el Outer Rim en busca de bases rebeldes. Cada lote de sondas patrulla un conjunto de sistemas estelares: la mayoría no encuentra nada y continúa en órbita en silencio, pero aquellas que detectan actividad rebelde transmiten una señal de alerta (intensidad 0–100) antes de ser destruidas por los rebeldes. El sistema de inteligencia imperial debe procesar esas alertas en tiempo real.
 
@@ -12,22 +20,9 @@ Antes de desplegar el sistema en producción, se prueba con datos simulados el c
 
 El programa `sondas` implementa ese sistema de monitoreo. A lo largo de la sesión se escribe, compila, automatiza, depura y perfila el programa, introduciendo una herramienta nueva en cada etapa.
 
-## Requisitos
-
-- Máquina virtual Lubuntu con VirtualBox
-- Herramientas instaladas: `gcc`, `make`, `gdb`, `valgrind`, `htop`
-- Clonar este repositorio:
-
-```bash
-git clone <url-del-repo> lab01
-cd lab01
-ls
-pwd
-```
-
 ## Actividad
 
-### Etapa 1: Compilación manual con gcc
+### 1. Compilación manual con gcc
 
 El compilador `gcc` transforma el código fuente `.c` en un ejecutable binario. La compilación se realiza manualmente desde la terminal.
 
@@ -37,7 +32,7 @@ gcc sondas.c
 
 Al ejecutar el programa con `./a.out` se observa que el programa funcionando. La salida del programa es algo como esto:
 
-```
+```text
 === Monitor de Sondas Imperiales - Sector Outer Rim ===
 
 Lote       1 | sondas:  5 | detecciones:  3 | max:  91 | min:  43 | avg:  68.33
@@ -78,7 +73,7 @@ C ha tenido una larga evolución en el tiempo, lo que ha derivado en diferentes 
 gcc -Wall -std=c11 -o sondas sondas.c
 ```
 
-### Etapa 2: Automatización con make
+### 2. Automatización con make
 
 Cuando el proyecto crece, reescribir el comando `gcc` en cada compilación es tedioso y propenso a errores. `make` automatiza ese proceso a partir de un archivo llamado `Makefile`.
 
@@ -106,7 +101,7 @@ clean:
 
 `make` detecta automáticamente si el archivo fuente cambió y solo recompila cuando es necesario.
 
-### Etapa 3: Depuración con gdb
+### 3. Depuración con gdb
 
 El programa opera en modo continuo procesando lotes, pero esporádicamente se produce un crash `Floating point exception (core dumped)`. Si bien podríamos inspeccionar detalladamente el código, podemos usar `gdb` para identificar exactamente dónde ocurre el crash y qué variables están involucradas.
 
@@ -125,7 +120,7 @@ Program received signal SIGFPE, Arithmetic exception.
 
 La idea de usar `gdb` es poder obtener información detallada sobre el error, como la línea exacta del código donde ocurre, los valores de las variables en ese momento y el stack trace completo. Ante esto, podemos intentar analizar el código máquina en el punto del error mediante `disassemble`, lo que nos da algo como:
 
-```
+```text
 Dump of assembler code for function calcular_promedio:
    0x0000555555555209 <+0>:     endbr64
    0x000055555555520d <+4>:     push   %rbp
@@ -162,7 +157,7 @@ Para obtener símbolos de depuración, compilar con el flag `-g` que podemos agr
 - **list**: Muestra el código fuente alrededor de la línea actual, lo que ayuda a entender el contexto del error
 - **print**: Permite inspeccionar el valor de variables específicas en el momento del error
 
-### Etapa 4: Detección de leaks con valgrind
+### 4. Detección de leaks con valgrind
 
 Con el bug anterior corregido, el programa ya no colapsa, por lo que usamos la herramienta `htop` para monitorear su funcionamiento; sin embargo, se observa que el consumo de memoria crece de forma sostenida. Esto sugiere que hay un **leak de memoria**, es decir, que el programa está asignando memoria pero no la libera adecuadamente.
 
@@ -174,7 +169,7 @@ valgrind --leak-check=full ./sondas
 
 Tras algunos lotes podemos terminar el programa con `Ctrl+C` y analizar el reporte que nos mostrará algo como esto:
 
-```
+```text
 ==878570== 
 ==878570== Process terminating with default action of signal 2 (SIGINT)
 ==878570==    at 0x4961A7A: clock_nanosleep@@GLIBC_2.17 (clock_nanosleep.c:78)
@@ -206,7 +201,7 @@ Tras algunos lotes podemos terminar el programa con `Ctrl+C` y analizar el repor
 
 Con lo anterior podemos identificar exactamente en qué línea del código ocurre la solicitud de memoria que no se está liberando, analizar el contexto de esa línea y corregir el error. 
 
-### Etapa 5: Perfilamiento con time
+### 5. Perfilamiento con time
 
 Con los bugs corregidos, se puede medir el tiempo de ejecución del programa. Para que la medición sea significativa se elimina el `sleep(1)` del bucle y se reemplaza el `while(1)` por un número fijo de un millón de iteraciones.
 
@@ -219,7 +214,7 @@ time ./sondas
 
 Salida esperada:
 
-```
+```text
 === Monitor de Sondas Imperiales - Sector Outer Rim ===
 
 Lote       1 | sondas:  5 | detecciones:  3 | max:  91 | min:  43 | avg:   68
